@@ -4,9 +4,11 @@
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [
+     [metosin/jsonista "0.2.2"]
+     [metosin/muuntaja "0.6.3"]
      [org.clojure/clojure "1.10.0"]
      [prismatic/schema "1.1.10"]
-     [tupelo "0.9.130"] ]
+     [tupelo "0.9.138"] ]
   :plugins [
     [com.jakemccrary/lein-test-refresh "0.23.0"]
     [lein-ancient "0.6.15"]
