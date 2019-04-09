@@ -1,38 +1,22 @@
 (ns tst.demo.core
   (:use demo.core tupelo.core tupelo.test)
-  (:require
-    [jsonista.core :as json]
-    [muuntaja.core :as muun]
-    [tupelo.pedestal :as tp]
-    [tupelo.string :as tstr]
-    [tupelo.parse.yaml :as yaml]
-    ))
+  (:require [schema.core :as s]
+            [clojure.string :as str]))
 
-
-
-(defn jsonista-round-trip [arg]
-  (it-> arg
-    (json/write-value-as-string it)
-    (json/read-value it)))
-
-(dotest
-  (spyx (jsonista-round-trip {:kikka 42}))
-  (spyx (jsonista-round-trip {"one" 1
-                              ""    {:kikka 42}})))
-
-(comment
-  ; result
-  (jsonista-round-trip {:kikka 42}) => {"kikka" 42}
-  (jsonista-round-trip {"one" 1, "" {:kikka 42}}) => {"" {"kikka" 42}, "one" 1}
-)
-
-(defn muun-round-trip [arg]
-  (it-> arg
-    (muun/encode tp/application-json it)
-    (muun/decode tp/application-json it)))
+(s/defn divisible-by-3 :- s/Str
+  [binary-str-all]
+  (let [binstr-div-by-3? (s/fn [binstr :- s/Str]
+                           (it-> binstr
+                             (Integer/parseInt it 2)
+                             (mod it 3)
+                             (zero? it)))]
+    (it-> binary-str-all
+      (str/split it #",")
+      (keep-if binstr-div-by-3? it)
+      (str/join "," it))))
 
 (dotest
-  (spyx (muun-round-trip {:kikka 42}))
-  (spyx (muun-round-trip {"one" 1
-                          ""    {:kikka 42}})))
+  (is= (divisible-by-3 "1100,101,111,1111")
+    "1100,1111"))
+
 
