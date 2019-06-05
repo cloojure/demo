@@ -1,0 +1,26 @@
+{:deps    {
+           org.clojure/clojure            {:mvn/version "1.10.0"}
+           org.clojure/clojurescript      {:mvn/version "1.10.339"} ; works with minerva-cljs
+           ;org.clojure/clojurescript                 {:mvn/version "1.10.439"}
+           ;org.clojure/clojurescript                 {:mvn/version "1.10.520"}
+           ; #todo #bug! cannot run minerva          ^^^ 1.10.439 or 1.10.520 ^^^  due to secretary "lazy seq MapEntry" bug
+
+           prismatic/schema               {:mvn/version "1.1.10"}
+           tupelo                         {:mvn/version "0.9.137"}
+           ;-----------------------------------------------------------------------------
+         ; org.clojure/data.csv           {:mvn/version "0.1.1"}
+           org.eclipse.jetty/jetty-server {:mvn/version "9.4.15.v20190215"}
+           joda-time/joda-time            {:mvn/version "2.10.1"}
+           }
+
+ :paths   ["src/cljc" "src/cljs" "test/cljs" ;  "test/cljc"
+           "target" "resources"]
+
+ :aliases {
+           :ancient   {:main-opts  ["-m" "deps-ancient.deps-ancient"]
+                       :extra-deps {deps-ancient {:mvn/version "RELEASE"}}}
+           :fig       {:main-opts ["-m" "figwheel.main"]}
+           :build-dev {:main-opts ["-m" "figwheel.main" "-b" "dev" "-r"]}
+           }
+ }
+

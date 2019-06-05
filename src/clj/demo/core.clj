@@ -1,7 +1,11 @@
 (ns demo.core
-  (:use tupelo.core tupelo.forest)
+  (:use tupelo.core
+        tupelo.forest)
   (:require
-    [clojure.string :as str] ) )
+    [clojure.string :as str])
+  (:gen-class)
+  (:import [java.io ByteArrayOutputStream PrintStream]))
+
 
 (defn foo [] "Foo!")
 
