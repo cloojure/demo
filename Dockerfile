@@ -18,7 +18,8 @@ COPY . .
 # RUN find / -name .m2 | xargs du    # maven cache is in /root/.m2
 # RUN clojure --eval '(println "hello world")'
 
-CMD clojure --eval '(println "Hello Clojure:  "  (clojure-version))'  &&  \
-        echo "pwd = $(pwd)"  && \
-        date
+CMD clojure --eval '(println "Hello Clojure:  "  (clojure-version))'  \
+    && echo "pwd = $(pwd)"  \
+    && false \
+    && date
 
