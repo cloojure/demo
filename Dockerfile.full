@@ -10,7 +10,10 @@ RUN wget https://download.clojure.org/install/linux-install-$CLOJURE_VERSION.sh 
     && chmod +x linux-install-$CLOJURE_VERSION.sh \
     && ./linux-install-$CLOJURE_VERSION.sh
 
-COPY ./.m2 /root/.m2
+# RUN find / -name .m2 | xargs du  # search for ~/.m2 for container
+# Docker runs as `root` in container, so $HOME in container is `/root`. Thus maven cache is /root/.m2 
+# Must be run from home dir (~) when execute `docker build  -f <path>/Dockerfile.full  -t clojure-full .` 
+COPY ./.m2 /root/.m2   
 
 RUN echo ~; ls -al ~
 RUN clojure -e "(clojure-version)"

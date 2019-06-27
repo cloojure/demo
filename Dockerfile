@@ -7,7 +7,7 @@ FROM clojure-full
 SHELL ["/bin/bash", "-c"] 
 RUN echo ~; ls -al ~
 RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+WORKDIR      /usr/src/app
 COPY . .
 
 #-----------------------------------------------------------------------------
@@ -15,11 +15,11 @@ COPY . .
 #-----------------------------------------------------------------------------
 # don't change above this line or will force re-download of all deps
 
-# RUN find / -name .m2 | xargs du    # maven cache is in /root/.m2
 # RUN clojure --eval '(println "hello world")'
 
+# can stick in the middle below & cause the whole `docker run ...` command to fail
+#   && false \
 CMD clojure --eval '(println "Hello Clojure:  "  (clojure-version))'  \
     && echo "pwd = $(pwd)"  \
-    && false \
     && date
 
