@@ -1,8 +1,5 @@
 (defproject demo "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
-  :license {:name "Eclipse Public License"
-            :url  "http://www.eclipse.org/legal/epl-v10.html"}
+  :license {:name "Eclipse Public License" :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [
      [cambium/cambium.core "0.9.3"]
     ;[cambium/cambium.codec-simple "0.9.3" ]
@@ -18,6 +15,7 @@
      ;[org.slf4j/slf4j-simple "1.7.26"]
      [prismatic/schema "1.1.11"]
      [tupelo "0.9.144"] ]
+
   :plugins [
     [com.jakemccrary/lein-test-refresh "0.23.0"]
     [lein-ancient "0.6.15"]
