@@ -2,13 +2,15 @@
 # FROM clojure:openjdk-11-tools-deps   
 
 # Has a /root/.m2 pre-loaded with common Clojure libs
-FROM clojure-full
+# FROM clojure-full
+FROM zenika/alpine-chrome
 
 SHELL ["/bin/bash", "-c"] 
 RUN echo ~; ls -al ~
 RUN mkdir -p /usr/src/app
 WORKDIR      /usr/src/app
-COPY . .
+# always prefer `COPY` to `ADD`
+COPY . .   
 
 #-----------------------------------------------------------------------------
 # RUN clojure -Stree  # force download of all deps.edn libs
