@@ -1,11 +1,12 @@
 (ns tst.demo.core
   (:use demo.core tupelo.core tupelo.test)
-  (:require
-    [clojure.string :as str]
-    ))
+  (:require [tupelo.core :as t]))
 
 
 (comment
+
+  (println :last
+    (+ (snoop 4) (snoop 5)))
 
   (defn max-coins [coin-value desired]
     (assert (< 0 coin-value))
