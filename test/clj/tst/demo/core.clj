@@ -10,8 +10,6 @@
   [] (sleep 20))
 
 (dotest
-  ; (spyx (keyword `sleep20))
-
   (timer-stats-reset)
   (sleep-10) (sleep-10) (sleep-10) (sleep-10) (sleep-10) (sleep-10) (sleep-10) (sleep-10) (sleep-10) (sleep-10)
   (sleep-20) (sleep-20) (sleep-20) (sleep-20) (sleep-20) (sleep-20) (sleep-20) (sleep-20) (sleep-20) (sleep-20)
@@ -23,7 +21,7 @@
   (println "-----------------------------------------------------------------------------")
   (stats-print-all)
 
-  )
+)
 
 ;(let [start       (System/currentTimeMillis)
 ;      elapsed-now (fn [] (- (System/currentTimeMillis) start))]
