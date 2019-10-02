@@ -4,15 +4,17 @@
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [
-     [metosin/jsonista "0.2.2"]
-     [metosin/muuntaja "0.6.3"]
+     [criterium "0.4.5"]
+     [metosin/jsonista "0.2.4"]
+     [metosin/muuntaja "0.6.4"]
      [org.clojure/clojure "1.10.1"]
-     [prismatic/schema "1.1.10"]
-     [tupelo "0.9.151"] ]
+     [prismatic/schema "1.1.12"]
+     [tupelo "0.9.152"]
+                 ]
   :plugins [
-    [com.jakemccrary/lein-test-refresh "0.23.0"]
+    [com.jakemccrary/lein-test-refresh "0.24.1"]
     [lein-ancient "0.6.15"]
-    [lein-codox "0.10.3"]]
+    [lein-codox "0.10.7"]]
 
   :db "jdbc:postgresql://localhost/default"
   :settings "settings-default.edn"
