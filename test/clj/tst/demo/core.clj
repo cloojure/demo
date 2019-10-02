@@ -4,28 +4,18 @@
 (defn sleep [millis] (Thread/sleep millis))
 (defnp sleep-20
   "sleep 20 ms"
-  [] (println :sleep-20) (sleep 20))
-(defnp sleep-50 [] (println :sleep-50) (sleep 50))
-(defnp sleep-100 [] (println :sleep-100) (sleep 100))
+  [] (sleep 20))
+(defnp sleep-50 [] (sleep 50))
+(defnp sleep-100 [] (sleep 100))
 
 (dotest
   ; (spyx (keyword `sleep20))
 
   (timer-stats-reset)
-  (sleep-20) (sleep-20) (sleep-20) (sleep-20) (sleep-20) (sleep-20) (sleep-20) (sleep-20) (sleep-20)
-  (sleep-50) (sleep-50) (sleep-50) (sleep-50) (sleep-50)
-  (sleep-100) (sleep-100) (sleep-100)
-
-  ;(stats-update :x 2)
-  ;(stats-update :x 1.95)
-  ;(stats-update :x 2.05)
-  ;(stats-update :x 1.90)
-  ;(stats-update :x 2.10)
-  ;(stats-update :x 1.85)
-  ;(stats-update :x 2.15)
-  ; (spyx (stats-get :x)) ; :demo.core/sleep-99
-
-  (spyx-pretty @timer-stats)
+  (sleep-20) (sleep-20) (sleep-20) (sleep-20) (sleep-20) (sleep-20) (sleep-20) (sleep-20) (sleep-20) (sleep-20)
+  (sleep-50) (sleep-50) (sleep-50) (sleep-50) (sleep-50) (sleep-50) (sleep-50) (sleep-50) (sleep-50) (sleep-50)
+  (sleep-100) (sleep-100) (sleep-100) (sleep-100) (sleep-100)
+  (sleep-20) (sleep-20) (sleep-20) (sleep-20) (sleep-20)
 
   (nl)
   (println "-----------------------------------------------------------------------------")
