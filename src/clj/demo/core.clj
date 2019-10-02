@@ -5,20 +5,6 @@
     )
   (:gen-class))
 
-(comment
-(defmacro with-timer
-  "Prints `id` and the elapsed (elapsed) execution time for a set of forms."
-  [id & forms]
-  `(let [start#   (System/nanoTime)
-         result#  (do ~@forms)
-         stop#    (System/nanoTime)
-         elapsed# (double (- stop# start#))
-         secs#    (/ elapsed# 1e9)]
-     (println (format ":with-timer   %s   = %.3f sec" ~id secs#))
-     result#))
-  )
-
-(def plus-nil-zero (fnil + 0))
 (def timer-stats (atom {}))
 (defn timer-stats-reset
   "Reset timer-stats to empty"
@@ -82,7 +68,7 @@
         mean-x    (/ sum n)
         mean2-x   (* mean-x mean-x)
         mean-x2   (/ sum2 n)
-        sigma2-x  (- mean-x2 mean2-x)
+        sigma2-x  (max 0.0 (- mean-x2 mean2-x)) ; in case roundoff => neg
         sigma-x   (Math/sqrt sigma2-x)]
     {:n n :mean mean-x :sigma sigma-x}))
 
@@ -96,12 +82,17 @@
 
 (defn stats-print-all
   []
-  (doseq [k (sort-by :mean (keys @timer-stats))]
-    (let [stats  (stats-get k)
-          n (grab :n stats)
-          mean (grab :mean stats)
-          sigma (grab :sigma stats) ]
-    (println (format "%-30s %5d %9.5f %10.8f" k n mean sigma ))) )
+  (let [stats-all        (spyx-pretty (stats-get-all))
+        stats-all-sorted (sort-by (fn sort-by-fn
+                                    [mapentry]
+                                    (let [[stats-key stats] mapentry]
+                                      (:mean stats)))
+                           stats-all)]
+    (doseq [[stats-key stats] stats-all-sorted ]
+      (let [n     (grab :n stats)
+            mean  (grab :mean stats)
+            sigma (grab :sigma stats)]
+        (println (format "%-30s %5d %9.5f %10.8f" stats-key n mean sigma)))))
   )
 
 ;(newline)

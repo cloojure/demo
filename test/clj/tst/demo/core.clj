@@ -2,19 +2,21 @@
   (:use demo.core tupelo.core tupelo.test))
 
 (defn sleep [millis] (Thread/sleep millis))
+(defnp sleep-a [] (sleep 13))
+(defnp sleep-b [] (sleep 14))
+(defnp sleep-10 [] (sleep 10))
 (defnp sleep-20
   "sleep 20 ms"
   [] (sleep 20))
-(defnp sleep-50 [] (sleep 50))
-(defnp sleep-100 [] (sleep 100))
 
 (dotest
   ; (spyx (keyword `sleep20))
 
   (timer-stats-reset)
+  (sleep-10) (sleep-10) (sleep-10) (sleep-10) (sleep-10) (sleep-10) (sleep-10) (sleep-10) (sleep-10) (sleep-10)
   (sleep-20) (sleep-20) (sleep-20) (sleep-20) (sleep-20) (sleep-20) (sleep-20) (sleep-20) (sleep-20) (sleep-20)
-  (sleep-50) (sleep-50) (sleep-50) (sleep-50) (sleep-50) (sleep-50) (sleep-50) (sleep-50) (sleep-50) (sleep-50)
-  (sleep-100) (sleep-100) (sleep-100) (sleep-100) (sleep-100)
+  (sleep-a) (sleep-a) (sleep-a) (sleep-a)
+  (sleep-b)
   (sleep-20) (sleep-20) (sleep-20) (sleep-20) (sleep-20)
 
   (nl)
