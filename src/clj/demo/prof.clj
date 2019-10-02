@@ -1,9 +1,5 @@
-(ns demo.core
-  (:use tupelo.core tupelo.forest)
-  (:require
-    [overtone.at-at :as at]
-    )
-  (:gen-class))
+(ns demo.prof
+  (:use tupelo.core tupelo.forest))
 
 (def timer-stats (atom {}))
 (defn timer-stats-reset
@@ -25,7 +21,7 @@
           (let [stats-new     {:n    (inc n)
                                :sum  (+ sum seconds)
                                :sum2 (+ sum2 (* seconds seconds))}
-                stats-map-new (assoc stats-map id stats-new) ]
+                stats-map-new (assoc stats-map id stats-new)]
             stats-map-new))))))
 
 (defmacro with-timer-accum
@@ -34,22 +30,14 @@
   (do
     (when-not (keyword? id)
       (throw (ex-info "id must be a keyword" (vals->map id))))
-    (println (ns-name *ns*))
-    (println :meta (meta &form))
     `(let [start#   (System/nanoTime)
            result#  (do ~@forms)
            stop#    (System/nanoTime)
            elapsed# (double (- stop# start#))
            secs#    (/ elapsed# 1e9)]
        (stats-update ~id secs#)
-      ;(swap! timer-stats update ~id plus-nil-zero secs#)
+       ;(swap! timer-stats update ~id plus-nil-zero secs#)
        )))
-(defn add-1
-  ""
-  [x]
-  (with-timer-accum :demo.core/add-1
-    (inc x)))
-
 
 (defmacro defnp
   "A replacement for clojure.core/defn that accumuldates profiling data. Converts a function like:
@@ -75,7 +63,7 @@
                                 [form-0 (rest forms)]
                                 ["" forms])
         args-vec   (first args-code)
-        code-forms (rest args-code) ]
+        code-forms (rest args-code)]
     (list 'defn name docstring args-vec
       `(with-timer-accum ~ns-fn-id ~@code-forms))))
 
@@ -96,37 +84,26 @@
 (defn stats-get-all
   "Return all stats"
   []
-  (let [ result (apply glue
-                  (forv [k (keys @timer-stats)]
-                    {k (stats-get k)}))]
+  (let [result (apply glue
+                 (forv [k (keys @timer-stats)]
+                   {k (stats-get k)}))]
     result))
 
 (defn stats-print-all
   []
-  (let [stats-all        (stats-get-all)
-        stats-all-sorted (sort-by (fn sort-by-fn
+  (let [stats-all-sorted (sort-by (fn sort-by-fn
                                     [mapentry]
                                     (let [[stats-key stats] mapentry]
                                       (:mean stats)))
-                           stats-all)]
+                           (stats-get-all))]
     (doseq [[stats-key stats] stats-all-sorted]
       (let [n     (grab :n stats)
             mean  (grab :mean stats)
             sigma (grab :sigma stats)]
-        (println (format "%-30s %5d %9.5f %10.8f" stats-key n mean sigma)))))
-  )
+        (println (format "%-30s %5d %9.5f %10.8f" stats-key n mean sigma))))))
 
-(newline)
-(println "********************")
-(pretty (macroexpand-1
-           '(defnp add-1 [x] (inc x))))
-(println "********************")
-(newline)
-
-; (def atat-pool (at/mk-pool))
-;(spyx (plus-nil-zero nil 1))
-
-(defn -main [& args]
-
-  ; (System/exit :0)
-  )
+;(newline)
+;(println "********************")
+;(pretty (macroexpand-1
+;           '(defnp add-1 [x] (inc x))))
+;(println "********************")
