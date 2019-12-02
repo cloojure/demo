@@ -4,12 +4,9 @@
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [
-     [criterium "0.4.5"]
-     [metosin/jsonista "0.2.4"]
-     [metosin/muuntaja "0.6.4"]
-     [org.clojure/clojure "1.10.1"]
-     [prismatic/schema "1.1.12"]
-     [tupelo "0.9.152"]
+                 [org.clojure/clojure "1.10.1"]
+                 [prismatic/schema "1.1.12"]
+                 [tupelo "0.9.173"]
                  ]
   :plugins [
     [com.jakemccrary/lein-test-refresh "0.24.1"]
@@ -23,7 +20,7 @@
              :uberjar {:aot :all}}
 
   :global-vars {*warn-on-reflection* false}
-  :main ^:skip-aot demo.core
+  :main ^:skip-aot demo.core/foo
 
   :source-paths            ["src/clj"]
   :java-source-paths       ["src/java"]

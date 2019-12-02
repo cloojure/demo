@@ -1,10 +1,2 @@
-(ns demo.core
-  (:use tupelo.core tupelo.forest)
-  (:require
-    [clojure.string :as str]
-    ))
+(ns demo.core )
 
-
-
-(defn -main [& args]
-  )
