@@ -49,7 +49,7 @@
 
 (defmacro var-set-dynamic-1
   [var-sym val] (list 'set! var-sym val))
-(defmacro var-set-dynamic
+(defmacro set-it-dynamic
   [var-sym & forms]
   `(let [~'it ~var-sym]
      (clojure.core/var-set (var ~var-sym) ~@forms)))
@@ -82,19 +82,19 @@
               (spyx :in fred)
              ;(set! fred 99)
              ;(var-set (var fred) 99)
-              (var-set-dynamic fred 77) ; better than:  (set! fred 99)
+              (set-it-dynamic fred 77) ; better than:  (set! fred 99)
               (spyx :out fred)
-              (var-set-dynamic fred (+ fred 11)) ; better than:  (set! fred 99)
+              (set-it-dynamic fred (+ fred 11)) ; better than:  (set! fred 99)
               (spyx :out fred)
-              (var-set-dynamic fred (+ it 11)) ; better than:  (set! fred 99)
+              (set-it-dynamic fred (+ it 11)) ; better than:  (set! fred 99)
               (spyx :out fred)
               )]
-    (spyx fred)
+    (spyx :base fred)
     (binding [fred 5]
       (spyx :before fred)
       (fn2)
       (spyx :after fred))
-    (spyx fred))
+    (spyx :base fred))
 
   (nl) (println :var-local)
   (with-local-vars [x 1]
