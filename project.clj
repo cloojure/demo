@@ -5,13 +5,14 @@
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [
                  [org.clojure/clojure "1.10.1"]
+                 [org.clojure/tools.reader "1.3.2"]
                  [prismatic/schema "1.1.12"]
                  [tupelo "0.9.173"]
                  ]
   :plugins [
     [com.jakemccrary/lein-test-refresh "0.24.1"]
     [lein-ancient "0.6.15"]
-    [lein-codox "0.10.7"]]
+    ]
 
   :db "jdbc:postgresql://localhost/default"
   :settings "settings-default.edn"
