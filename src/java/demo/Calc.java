@@ -1,6 +1,5 @@
 package demo;
 
-import java.util.ArrayList;
 public class Calc {
   public static double pi_ovr_4 = Math.PI / 4;
 

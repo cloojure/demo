@@ -4,10 +4,14 @@
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [
+                 [cambium/cambium.core         "0.9.3"]
+                 [cambium/cambium.codec-simple "0.9.3"]
+                 [cambium/cambium.logback.core "0.4.3"]
                  [org.clojure/clojure "1.10.1"]
                  [org.clojure/tools.reader "1.3.2"]
                  [prismatic/schema "1.1.12"]
                  [tupelo "0.9.173"]
+                 [org.openjfx/javafx "13.0.1" :extension "pom"]
                  ]
   :plugins [
     [com.jakemccrary/lein-test-refresh "0.24.1"]
