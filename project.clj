@@ -8,6 +8,7 @@
                  [cambium/cambium.codec-simple "0.9.3"]
                  [cambium/cambium.logback.core "0.4.3"]
                  [org.clojure/clojure "1.10.1"]
+                 [org.clojure/core.async "0.7.559"]
                  [org.clojure/tools.reader "1.3.2"]
                  [prismatic/schema "1.1.12"]
                  [tupelo "0.9.173"]
