@@ -22,21 +22,32 @@
         final-code `(let ~r1 ~@forms)]
     final-code))
 
-
-(defn unless-impl
-  [args]
-  (let [[pred & forms] args]
+; desired output format of...
+(comment
+  (defmacro+showable
+    [pred & forms]
     `(if (and true ~pred)
        nil
        (do ~@forms))))
+;...is the following:
+;---------------------------------------------------------------------------------------------------
+(do       ; *** live code ***
+  (defn unless-impl
+    [args]
+    (let [[pred & forms] args]
+      `(if (and true ~pred)
+         nil
+         (do ~@forms))))
 
-(defmacro unless
-  [& args]
-  (unless-impl args))
+  (defmacro unless
+    [& args]
+    (unless-impl args)))
+;---------------------------------------------------------------------------------------------------
+
 
 (def curr-ns *ns*)
 
-(defn macro-print-impl
+(defn macro-show-impl
   [macro-expr]
   (let [macro-sym       (first macro-expr)
         macro-impl-sym  (str->sym (str curr-ns "/"
@@ -49,20 +60,20 @@
     ;(spyx macro-result)
     macro-result))
 
-(defmacro macro-print
+(defmacro macro-show
   [macro-expr]
   `(pprint/pprint
-    (quote ~(macro-print-impl macro-expr))))
+    (quote ~(macro-show-impl macro-expr))))
 
 (dotest
-  (nl) (println :dimple-impl-output-begin)
-  (pretty (macro-print-impl '(unless false (println "forms!") :yes)))
-  (println :dimple-impl-output-done)
+  (nl) (println :macro-show-impl-output-begin)
+  (pretty (macro-show-impl '(unless false (println "forms!") :yes)))
+  (println :macro-show-impl-output-done)
   (nl)
-  (println :dimple-call-begin)
-  (macro-print
+  (println :macro-show-begin)
+  (macro-show
     (unless false (println "forms!") :yeeessssss!))
-  (println :dimple-call-done)
+  (println :macro-show-done)
 
   (nl)
   (println "calling...")
@@ -71,64 +82,6 @@
   (println "  ...done")
   )
 
-;(comment
-;  (defn show-impl
-;    [macro-expr]
-;    `(do
-;       (let ; -spy
-;         [macro-sym#      (first ~macro-expr)
-;          macro-impl-sym# (str->sym (str curr-ns "/"
-;                                      (sym->str macro-sym#) "-impl"))
-;          macro-args#     (rest macro-expr#)
-;          macro-impl-call `(~macro-impl-sym# '~macro-args#)
-;          macro-result    (eval macro-impl-call)]
-;         (spyx macro-impl-sym#)
-;         (spyx macro-impl-call)
-;         (spyx-pretty macro-result)
-;         )))
-;
-;  (defmacro show
-;    [macro-expr]
-;    (show-impl macro-expr))
-;
-;  (dotest
-;    (spyx (unless false (println "forms!") :yes))
-;    (spyx (unless true (println "forms!") :yes))
-;
-;    (do   ; defn show-impl
-;      (let [macro-expr# '(unless false (println "forms!") :yes)]
-;        ; [macro-expr]
-;        (nl)
-;        (spyx *ns*)
-;        (spyx `unless-impl)
-;        (spyx (ns-resolve *ns* `unless-impl))
-;
-;        (nl)
-;        (do
-;          (let-spy
-;            [macro-sym#      (first macro-expr#)
-;             macro-impl-sym# (str->sym (str curr-ns "/"
-;                                         (sym->str macro-sym#) "-impl"))
-;             macro-args#     (rest macro-expr#)
-;             macro-impl-call `(~macro-impl-sym# '~macro-args#)
-;             macro-result    (eval macro-impl-call)]
-;            (spyx macro-impl-sym#)
-;            (spyx macro-impl-call)
-;            (spyx-pretty macro-result)
-;            ))))
-;
-;    ;(nl) (println "show-impl:")
-;    ;(pretty
-;    ;  (show-impl '(unless false (println "forms!") :yes)))
-;
-;    (nl) (println "calling show:")
-;    (println (macroexpand-1
-;               '(show (unless false (println "forms!") :yes))))
-;
-;    ;(nl) (println "calling macroexpand:")
-;    ;(println
-;    ;  (macroexpand-1 '(show (unless false (println "forms!") :yes))))
-;    ))
 
 
 
