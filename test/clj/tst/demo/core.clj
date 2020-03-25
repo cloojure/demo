@@ -1,105 +1,84 @@
-; #TODO  In a real app, would split up ns like:
-; #TODO         tic-tac-toe.core   - core fns
-; #TODO     tst.tic-tac-toe.core   - testing fns
 (ns tst.demo.core
   (:use tupelo.core tupelo.test)
   (:require
+    [clojure.string :as str]
     [schema.core :as s]
     [tupelo.array :as ta]
     [tupelo.core :as t]
-    [tupelo.schema :as tsk]))
+    [tupelo.schema :as tsk]
+    [tupelo.string :as ts]))
 
-(s/defn valid-elem? :- s/Bool
-  "Returns true iff element is valid from #{ :x :o nil }"
-  [elem]
-  (contains? #{:x :o nil} elem))
 
-(s/defn diagonal-main :- tsk/Vec
-  "Returns the main diagonal of an array"
-  [arr :- ta/Array]
-  (assert (= (ta/num-rows arr)
-            (ta/num-cols arr)))
-  (let [rows-indexed (t/indexed arr)]
-    (t/forv [[idx row] rows-indexed]
-      (ta/elem-get arr idx idx))))
+(s/defn row->chars :- [Character]
+  "Convert a string to a vector of chars, excluding blanks"
+  [s :- s/Str]
+  (t/it-> s
+    (ts/collapse-whitespace it)
+    (remove ts/whitespace? it)
+    (vec it)))
 
-(s/defn diagonal-anti :- tsk/Vec
-  "Returns the anti-diagonal of an array"
-  [arr :- ta/Array]
-  (diagonal-main (ta/rotate-left arr)))
+; #todo maybe enforce a case-insensitive search here?
+(s/defn count-matches-in-vec :- s/Int
+  "Counts the matches of a target string in a single vector of chars"
+  [char-vec :- [Character]
+   target :- s/Str] ; warning: assumes a simple string without any regex chars
+  (let [search-str (str/join char-vec)
+        matches    (re-seq (re-pattern target) search-str)
+        result     (count matches)]
+    result))
 
-(s/defn triple->winner :- s/Keyword
-  "Given a list of triples like [:x :o :x], return a list of
-     :x      - if X wins
-     :y      - if Y wins
-     ::none  - otherwise "
-  [row :- tsk/Triple]
-  (cond
-    (= [:x :x :x] row) :x
-    (= [:o :o :o] row) :o
-    :else ::none))
+(s/defn count-row-matches :- s/Int
+  "Counts the matches of a target string in an array of chars, searching left->right in each row"
+  [char-arr :- tsk/Array
+   target :- s/Str]
+  (let [found-cnts (mapv #(count-matches-in-vec % target) char-arr)
+        result     (apply + found-cnts)]
+    result))
 
-(defn board->result
-  "Determine if a completed tic-tac-toe board contains a winner.  Returns:
-     :x or :y    - if winner found
-     :cats-game  - otherwise. "
-  [board]
-  (let [arr (ta/rows->array board)] ; construct canonical array, verify rectangular
-    (assert (and ; verify valid shape 3x3
-              (= 3 (ta/num-rows arr))
-              (= 3 (ta/num-cols arr))))
-    (doseq [elem (ta/array->row-vals arr)] ; validate all elements
-      (t/validate valid-elem? elem))
-    (let [diag-main      (diagonal-main arr)
-          diag-anti      (diagonal-main (ta/rotate-left arr))
-          all-triples    (-> (t/glue
-                               (ta/array->rows arr)
-                               (ta/array->cols arr))
-                           (t/append diag-main)
-                           (t/append diag-anti))
-          winners        (mapv triple->winner all-triples)
-          winners-unique (set
-                           (remove #(= % ::none) winners))]
-      (cond
-        (zero? (count winners-unique)) :cats-game ; no winner
-
-        (= 1 (count winners-unique)) (first winners-unique) ; a single winner
-
-        :else ;  multiple winners found
-        (throw (ex-info "Multiple winners found! " (t/vals->map arr winners)))))))
+; #todo #awt:  does not check for all lowercase data & target
+(s/defn count-words-in-matrix :- s/Int
+  "Searches for a target string in a 2D character array, returning the number of matches
+  found.  Searches up/down & left/right."
+  [char-array :- tsk/Array
+   target :- s/Str]
+  (let [chars-lr    char-array ; for symmetry of names
+        chars-rl    (ta/flip-lr char-array)
+        chars-ud    (ta/rotate-left char-array)
+        chars-du    (ta/rotate-right char-array)
+        total-found (+
+                      (count-row-matches chars-lr target)
+                      (count-row-matches chars-rl target)
+                      (count-row-matches chars-ud target)
+                      (count-row-matches chars-du target))]
+    total-found))
 
 (dotest
-  ; demonstrate diag fns
-  (let [linear-array (ta/row-vals->array 3 3 [0 1 2
-                                              3 4 5
-                                              6 7 8])]
-    (is= [0 4 8] (diagonal-main linear-array))
-    (is= [2 4 6] (diagonal-anti linear-array)))
+  (let [word-data  "A O T D L R O W
+                    L C B M U M L U
+                    D R U J D B L J
+                    P A Z H Z Z E F
+                    B C Z E L F H W
+                    R K U L V P P G
+                    A L B L P O P Q
+                    B E M O P P J Y "
+        word-array (t/it-> word-data
+                     (str/trim it)
+                     (str/lower-case it)
+                     (str/split-lines it)
+                     (mapv row->chars it))]
+    (is= word-array
+      [[\a \o \t \d \l \r \o \w]
+       [\l \c \b \m \u \m \l \u]
+       [\d \r \u \j \d \b \l \j]
+       [\p \a \z \h \z \z \e \f]
+       [\b \c \z \e \l \f \h \w]
+       [\r \k \u \l \v \p \p \g]
+       [\a \l \b \l \p \o \p \q]
+       [\b \e \m \o \p \p \j \y]])
 
-  (is= :x (board->result [[:x :o :x] ; col win
-                          [:x :o :o]
-                          [:x :x :o]]))
-  (is= :x (board->result [[:x :x :x] ; row win
-                          [:o :x :o]
-                          [:x :o :o]]))
-  (is= :o (board->result [[:o :x :x] ; diag win
-                          [:x :o :x]
-                          [:x :o :o]]))
-  (is= :o (board->result [[:x :x :o] ; anti-diag win
-                          [:x :o :x]
-                          [:o :x :o]]))
+    (is= 2 (count-words-in-matrix word-array "hello"))
+    (is= 1 (count-words-in-matrix word-array "world"))
+    (is= 2 (count-words-in-matrix word-array "buzz"))
+    (is= 0 (count-words-in-matrix word-array "clojure"))
+    (is= 0 (count-words-in-matrix word-array "cowabunga"))))
 
-  (is= :cats-game (board->result [[:x :o :x]
-                                  [:x :o :x]
-                                  [:o :x :o]]))
-
-  ; #awt #todo:  maybe need to identify and exclude incomplete games ???
-  (is= :cats-game (board->result [[:o :x :x]
-                                  [:x nil :x]
-                                  [:x :o :o]]))
-
-  (throws? (board->result [[:x :o :x] ; invalid result with multiple winners
-                           [:x :o :x]
-                           [:x :o :o]]))
-
-  )
