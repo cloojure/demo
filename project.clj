@@ -4,36 +4,33 @@
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [
-                 [cambium/cambium.core         "0.9.3"]
+                 [cambium/cambium.core "0.9.3"]
                  [cambium/cambium.codec-simple "0.9.3"]
                  [cambium/cambium.logback.core "0.4.3"]
                  [org.clojure/clojure "1.10.1"]
-                 [org.clojure/core.async "0.7.559"]
-                 [org.clojure/tools.reader "1.3.2"]
                  [prismatic/schema "1.1.12"]
-                 [tupelo "0.9.173"]
-                 [org.openjfx/javafx "13.0.1" :extension "pom"]
+                 [tupelo "0.9.198"]
                  ]
-  :plugins [
-    [com.jakemccrary/lein-test-refresh "0.24.1"]
-    [lein-ancient "0.6.15"]
-    ]
+
+
+  :plugins [[com.jakemccrary/lein-test-refresh "0.24.1"]
+            [lein-ancient "0.6.15"]]
 
   :db "jdbc:postgresql://localhost/default"
   :settings "settings-default.edn"
 
-  :profiles {:dev     {:dependencies [ ]}
+  :profiles {:dev     {:dependencies []}
              :uberjar {:aot :all}}
 
-  :global-vars {*warn-on-reflection* false}
-  :main ^:skip-aot demo.core/foo
+  :global-vars {*warn-on-reflection* true}
+  :main ^:skip-aot demo.core/-main
 
-  :source-paths            ["src/clj"]
-  :java-source-paths       ["src/java"]
-  :test-paths              ["test/clj"]
-  :target-path             "target/%s"
-  :compile-path            "%s/class-files"
-  :clean-targets           [:target-path]
+  :source-paths ["src/clj"]
+  :java-source-paths ["src/java"]
+  :test-paths ["test/clj"]
+  :target-path "target/%s"
+  :compile-path "%s/class-files"
+  :clean-targets [:target-path]
 
-  :jvm-opts ["-Xms500m" "-Xmx8g" "-server" ]
+  :jvm-opts ["-Xms500m" "-Xmx8g" "-server"]
   )

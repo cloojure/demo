@@ -1,2 +1,4 @@
-(ns demo.core )
+(ns demo.core
+  (:use tupelo.core))
+
 
