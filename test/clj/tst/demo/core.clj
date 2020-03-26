@@ -1,11 +1,13 @@
 (ns tst.demo.core
   (:use tupelo.core tupelo.test)
   (:require
+    [clojure.set :as set]
     [schema.core :as s]
     [tupelo.array :as ta]
     [tupelo.core :as t]
-    [tupelo.schema :as tsk]
-    [clojure.set :as set]))
+    [tupelo.schema :as tsk] ))
+
+(def MIN-PATTERN-LENGTH 3)
 
 (def Key s/Int)
 
@@ -65,7 +67,7 @@
   "Given two keys, returns a set of all keys on a line between them"
   [a :- Key
    b :- Key]
-  (let [candidate-keys (set/difference keys-set #{a b}) ; don't consider duplicates
+  (let [candidate-keys (glue (sorted-set) (set/difference keys-set #{a b})) ; don't consider duplicates
         tweener?       (fn [cand-key] (between? a cand-key b))]
     (set (filter tweener? candidate-keys))))
 
@@ -74,6 +76,33 @@
   [keys :- [Key]]
   (let [num-unique (count (set keys))]
     (not= (count keys) num-unique)))
+
+(s/defn valid-path? :- s/Bool
+  "Returns true iff input key sequence is a valid pattern lock"
+  [keys :- [Key]]
+  (let [pattern-too-short (< (count keys) MIN-PATTERN-LENGTH) ; #todo enforce a minimum pattern len?
+        invalid-keys?     (t/has-some? falsey? (mapv validate-key keys))]
+    (if (or invalid-keys?
+          pattern-too-short
+          (duplicate-keys? keys))
+      false
+
+      ; walk the path and ensure path doesn't skip unused keys
+      (loop [prev      (first keys)
+             remaining (rest keys)
+             seen      #{prev}]
+        (if (empty? remaining)
+          ; have walked the whole list w/o finding a problem => valid sequence
+          true
+          (let [curr             (first remaining)
+                tweeners         (betweener-keys prev curr)
+                tweeners-invalid (set/difference tweeners seen)]
+            (if (not-empty? tweeners-invalid)
+              false
+              (let [prev-next      curr
+                    remaining-next (rest remaining)
+                    seen-next      (conj seen curr)]
+                (recur prev-next remaining-next seen-next)))))))))
 
 (dotest
   (is= keys-array [[1 2 3] ; what a 3x3 keypad looks like
@@ -96,18 +125,7 @@
   (isnt (validate-key 0))
   (isnt (validate-key 10))
 
-  ; OBE
-  ;(is (aligned? 1 2 3)) ; verify alishment tests on a 3x3 keypad
-  ;(is (aligned? 1 2 3)) ; verify alishment tests on a 3x3 keypad
-  ;(is (aligned? 7 5 3))
-  ;(is (aligned? 7 1 4))
-  ;(is (aligned? 9 1 5))
-  ;(isnt (aligned? 8 1 5))
-  ;(isnt (aligned? 1 6 7))
-  ;(throws? (aligned? 0 6 7)) ; throws for invalid keys
-  ;(throws? (aligned? 0 6 10))
-
-  (is (between? 1 2 3)) ; verify alishment tests on a 3x3 keypad
+  (is (between? 1 2 3)) ; verify alignment tests on a 3x3 keypad
   (isnt (between? 2 1 3))
   (is (between? 7 5 3))
   (isnt (between? 5 7 3))
@@ -127,38 +145,16 @@
   (is= #{6} (betweener-keys 9 3))
 
   (isnt (duplicate-keys? [1 2 3]))
-  (is (duplicate-keys? [1 2 3 2 1]))
-  )
-
-
-(s/defn valid-path? :- s/Bool
-  "Returns true iff input key sequence is a valid pattern lock"
-  [keys :- [Key]]
-  (let [pattern-too-short (< (count keys) 4) ; #todo enforce a minimum pattern len?
-        invalid-keys?     (t/has-some? falsey? (mapv validate-key keys))]
-    (if (or invalid-keys?
-          pattern-too-short
-          (duplicate-keys? keys))
-      false
-
-      (do ; walk the path and ensure path doesn't skip unused keys
-        (loop [prev (first keys)
-               seen #{}
-
-               ])
-        true)
-      ))
-  )
-
+  (is (duplicate-keys? [1 2 3 2 1])) )
 
 (dotest
-
-  ;(is (valid-path? [1 6 7 4]))   ; knights jump is valid
-  ;(is (valid-path? [2 1 3]))     ; 2 is already used, so we can cross it
-  ;(isnt (valid-path? [1 3 2]))     ; can't get from 1 to 3 without using 2 first
-  ;(isnt (valid-path? [1 9]))       ; can't cross 5 without using
+  (is (valid-path? [1 6 7 4])) ; knights jump is valid
+  (is (valid-path? [2 1 3])) ; 2 is already used, so we can cross it
+  (isnt (valid-path? [1 3 2])) ; can't get from 1 to 3 without using 2 first
+  (isnt (valid-path? [1 9 8 7])) ; can't cross 5 without using
+  (is (valid-path? [1 5 9 8 7])) ; can't cross 5 without using
   (isnt (valid-path? [1 2 3 2 1])) ; can't use dots more than once
   (isnt (valid-path? [0 1 2 3])) ; there's no dot 0
-  (isnt (valid-path? [1 2 3])) ; minimum pattern len is 4
+  (isnt (valid-path? [1 2]))) ; fails minimum pattern len
 
-  )
+
