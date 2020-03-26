@@ -4,7 +4,8 @@
     [schema.core :as s]
     [tupelo.array :as ta]
     [tupelo.core :as t]
-    [tupelo.schema :as tsk]))
+    [tupelo.schema :as tsk]
+    [clojure.set :as set]))
 
 (def Key s/Int)
 
@@ -44,6 +45,45 @@
         result (t/rel= prod-32 prod-23 :digits 8) ]
     result) )
 
+(s/defn between? :- s/Bool
+  "Returns true if 3 points fall on a straight line
+  and b is between a & c "
+  [a :- Key
+   b :- Key
+   c :- Key]
+  (assert (= 3 (count #{a b c}))) ; ensure all unique
+  (let [[x1 y1] (grab a key->coord)
+        [x2 y2] (grab b key->coord)
+        [x3 y3] (grab c key->coord)
+
+        dx3     (- x3 x1)
+        dy3     (- y3 y1)
+        dx3-2   (* dx3 dx3)
+        dy3-2   (* dy3 dy3)
+        dist3   (Math/sqrt (+ dx3-2 dy3-2))
+
+        dx2     (- x2 x1)
+        dy2     (- y2 y1)
+        dx2-2   (* dx2 dx2)
+        dy2-2   (* dy2 dy2)
+        dist2   (Math/sqrt (+ dx2-2 dy2-2))
+
+        ratio23 (/ dist2 dist3)
+
+        result  (and
+                  (<= (Math/abs ratio23) 1.0)
+                  (t/rel= dx2 (* dx3 ratio23) :digits 5)
+                  (t/rel= dy2 (* dy3 ratio23) :digits 5))]
+    result))
+
+(s/defn betweener-keys :- #{Key}
+  "Given two keys, returns a set of all keys on a line between them"
+  [a :- Key
+   b :- Key]
+  (let [candidate-keys (set/difference keys-set #{a b}) ; don't consider duplicates
+        tweener?       (fn [cand-key] (between? a cand-key b))]
+    (set (filter tweener? candidate-keys))))
+
 (dotest
   (is= keys-array [[1 2 3] ; what a 3x3 keypad looks like
                    [4 5 6]
@@ -61,6 +101,7 @@
      9 [2 2]})
 
   (is (aligned? 1 2 3)) ; verify alishment tests on a 3x3 keypad
+  (is (aligned? 1 2 3)) ; verify alishment tests on a 3x3 keypad
   (is (aligned? 7 5 3))
   (is (aligned? 7 1 4))
   (is (aligned? 9 1 5))
@@ -69,6 +110,24 @@
   (throws? (aligned? 0 6 7)) ; throws for invalid keys
   (throws? (aligned? 0 6 10))
 
+  (is (between? 1 2 3)) ; verify alishment tests on a 3x3 keypad
+  (isnt (between? 2 1 3))
+  (is (between? 7 5 3))
+  (isnt (between? 5 7 3))
+  (is (between? 7 4 1))
+  (isnt (between? 7 1 4))
+  (isnt (between? 9 1 5))
+  (is (between? 1 5 9))
+  (isnt (between? 8 1 5))
+  (isnt (between? 1 6 7))
+  (throws? (between? 0 6 7)) ; throws for invalid keys
+  (throws? (between? 0 6 10))
+
+  (is= #{2} (betweener-keys 1 3))
+  (is= #{} (betweener-keys 1 2))
+  (is= #{5} (betweener-keys 1 9))
+  (is= #{5} (betweener-keys 7 3))
+  (is= #{6} (betweener-keys 9 3))
 
 
   )
