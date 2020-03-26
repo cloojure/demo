@@ -18,8 +18,7 @@
 (s/defn validate-key
   "Throws if key isnt valid"
   [k]
-  (when-not (contains? keys-set k)
-    (throw (ex-info "Invalid key found" {:key k})) ))
+  (truthy? (contains? keys-set k)))
 
 (s/def keys-array :- ta/Array
   (ta/row-vals->array nrows ncols keys-vec))
@@ -31,34 +30,12 @@
       (let [key-val (ta/elem-get keys-array ii jj)]
         {key-val [ii jj]}))))
 
-;(s/defn aligned? :- s/Bool
-;  "Returns true if 3 points fall on a straight line"
-;  [a :- Key
-;   b :- Key
-;   c :- Key]
-;  (doseq [k [a b c]] (validate-key k))
-;  (assert (= 3 (count #{a b c}))) ; ensure all unique
-;  (let [[x1 y1] (grab a key->coord)
-;        [x2 y2] (grab b key->coord)
-;        [x3 y3] (grab c key->coord)
-;
-;        dx2     (- x2 x1)
-;        dx3     (- x3 x1)
-;        dy2     (- y2 y1)
-;        dy3     (- y3 y1)
-;
-;        prod-32 (* dx3 dy2)
-;        prod-23 (* dx2 dy3)
-;        result (t/rel= prod-32 prod-23 :digits 8) ]
-;    result) )
-
 (s/defn between? :- s/Bool
   "Returns true if 3 points fall on a straight line
   and b is between a & c "
   [a :- Key
    b :- Key
    c :- Key]
-  (doseq [k [a b c]] (validate-key k))
   (assert (= 3 (count #{a b c}))) ; ensure all unique
   (let [[x1 y1] (grab a key->coord)
         [x2 y2] (grab b key->coord)
@@ -114,10 +91,10 @@
      8 [2 1]
      9 [2 2]})
 
-  (throws-not? (validate-key 1))
-  (throws-not? (validate-key 9))
-  (throws? (validate-key 0))
-  (throws? (validate-key 10))
+  (is (validate-key 1))
+  (is (validate-key 9))
+  (isnt (validate-key 0))
+  (isnt (validate-key 10))
 
   ; OBE
   ;(is (aligned? 1 2 3)) ; verify alishment tests on a 3x3 keypad
@@ -153,24 +130,35 @@
   (is (duplicate-keys? [1 2 3 2 1]))
   )
 
+
 (s/defn valid-path? :- s/Bool
   "Returns true iff input key sequence is a valid pattern lock"
   [keys :- [Key]]
-  (if (duplicate-keys? keys)
-    false
-    (do   ; walk the path and ensure path doesn't skip unused keys
-      (let [state {:seen #{}
+  (let [pattern-too-short (< (count keys) 4) ; #todo enforce a minimum pattern len?
+        invalid-keys?     (t/has-some? falsey? (mapv validate-key keys))]
+    (if (or invalid-keys?
+          pattern-too-short
+          (duplicate-keys? keys))
+      false
 
-                   }
-            ])
-      )
-    )
+      (do ; walk the path and ensure path doesn't skip unused keys
+        (loop [prev (first keys)
+               seen #{}
+
+               ])
+        true)
+      ))
   )
 
 
-;(is (valid-path [1 6 7 4]))   ;; knights jump is valid
-;(is (valid-path [2 1 3]))     ;; 2 is already used, so we can cross it
-;(isnt (valid-path [1 3 2]))     ;; can't get from 1 to 3 without using 2 first
-;(isnt (valid-path [1 9]))       ;; can't cross 5 without using
-;(isnt (valid-path [1 2 3 2 1])) ;; can't use dots more than once
-;(isnt (valid-path [0 1 2 3]))   ;; there's no dot 0
+(dotest
+
+  ;(is (valid-path? [1 6 7 4]))   ; knights jump is valid
+  ;(is (valid-path? [2 1 3]))     ; 2 is already used, so we can cross it
+  ;(isnt (valid-path? [1 3 2]))     ; can't get from 1 to 3 without using 2 first
+  ;(isnt (valid-path? [1 9]))       ; can't cross 5 without using
+  (isnt (valid-path? [1 2 3 2 1])) ; can't use dots more than once
+  (isnt (valid-path? [0 1 2 3])) ; there's no dot 0
+  (isnt (valid-path? [1 2 3])) ; minimum pattern len is 4
+
+  )
