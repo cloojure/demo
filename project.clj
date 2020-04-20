@@ -4,9 +4,13 @@
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [
+     [org.clojure/math.combinatorics "0.1.6"]
      [org.clojure/clojure "1.10.1"]
      [prismatic/schema "1.1.12"]
-     [tupelo "0.9.199"] ]
+     [tupelo "0.9.201"]
+     [camel-snake-kebab "0.4.1" ]
+
+                 ]
   :plugins [
     [com.jakemccrary/lein-test-refresh "0.24.1"]
     [lein-ancient "0.6.15"]

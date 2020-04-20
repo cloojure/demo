@@ -1,7 +1,41 @@
 (ns demo.core
   (:use tupelo.core tupelo.forest)
   (:require
-    [clojure.string :as str] ) )
+    [clojure.string :as str]
+    [clojure.walk :as walk]) )
+
+(defn unquote-form?
+  [arg]
+  (and (list? arg)
+    (= (quote unquote) (first arg)) ) )
+
+(defn unquote-splicing-form?
+  [arg]
+  (and (list? arg)
+    (= (quote unquote-splicing) (first arg)) ) )
+
+(defn tmpl-quote-impl
+  [form]
+  (walk/postwalk
+    (fn [item]
+      (cond
+        (unquote-form? item) (eval (xsecond item))
+        (sequential? item) (let [unquoted-vec (apply glue
+                                                (forv [it item]
+                                                  (if (unquote-splicing-form? it)
+                                                    (eval (xsecond it))
+                                                    [it])))
+                                 final-result (if (list? item)
+                                                (->list unquoted-vec)
+                                                unquoted-vec)]
+                             final-result)
+        :else item))
+    form))
+
+(defmacro tmpl-quote
+  [form]
+  (tmpl-quote-impl form))
+
 
 ; #todo move to tupelo
 ;(defmacro with-timer
