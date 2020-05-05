@@ -31,5 +31,5 @@
   :compile-path            "%s/class-files"
   :clean-targets           [:target-path]
 
-  :jvm-opts ["-Xms500m" "-Xmx4g" "-server" ]
+  :jvm-opts ["-Xms500m" "-Xmx4g" ]
   )
