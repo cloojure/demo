@@ -1,6 +1,6 @@
 (ns demo.core
-  (:use tupelo.core tupelo.test)
-  (:require
-    [clojure.string :as str]
-    ))
+  (:use tupelo.core tupelo.test))
+
+(defn -main [& args]
+  )
 
