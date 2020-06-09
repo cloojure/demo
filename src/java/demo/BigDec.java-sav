@@ -1,0 +1,9 @@
+package demo;
+import  java.math.BigDecimal;
+
+public class BigDec {
+  public static BigDecimal parseClojureString(String str ) {
+    char[] chars = str.toCharArray();
+    return new BigDecimal(chars, 0, (chars.length - 1));
+  }
+}
