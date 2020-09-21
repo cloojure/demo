@@ -1,7 +1,5 @@
 (ns tst.demo.core
-  (:use tupelo.core tupelo.test))
-
-
-
-
-
+  (:use demo.core tupelo.core tupelo.test)
+  (:require
+    [schema.core :as s]
+    [tupelo.schema :as tsk]))

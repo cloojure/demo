@@ -1,6 +1,7 @@
 (ns demo.core
-  (:use tupelo.core tupelo.test))
+  (:use tupelo.core))
 
-(defn -main [& args]
-  )
+(defn -main
+  [& args]
+  nil)
 
