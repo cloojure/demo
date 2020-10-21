@@ -2,8 +2,8 @@
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [
+                 [clojure.java-time "0.3.2"]
                  [org.clojure/clojure "1.10.2-alpha1"]
-                 [org.clojure/spec.alpha "0.2.187"]
                  [prismatic/schema "1.1.12"]
                  [tupelo "20.08.27"]
                  ]
@@ -12,9 +12,6 @@
             [lein-ancient "0.6.15"]
             [lein-codox "0.10.7"]
             ]
-
-  :db "jdbc:postgresql://localhost/default"
-  :settings "settings-default.edn"
 
   :profiles {:dev     {:dependencies []}
              :uberjar {:aot :all}}

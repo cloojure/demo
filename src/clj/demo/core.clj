@@ -1,7 +1,7 @@
 (ns demo.core
   (:use tupelo.core))
 
-(defn -main
-  [& args]
-  nil)
+(defn -main [& args]
+  (print-versions)
+ )
 
