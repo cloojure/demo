@@ -1,8 +1,7 @@
 (ns tst.demo.core
-  (:use tupelo.core tupelo.test))
-
-
-
+  (:use demo.core tupelo.core tupelo.test)
+  (:require
+    [tupelo.string :as str]))
 
 
 
