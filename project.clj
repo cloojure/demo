@@ -4,7 +4,8 @@
   :dependencies [
                  [org.apache.commons/commons-text "1.9"]
                  [clojure.java-time "0.3.2"]
-                 [org.clojure/clojure "1.10.2-alpha1"]
+                 ; [org.clojure/clojure "1.10.2-alpha1"]
+                 [org.clojure/clojure "1.10.1"]
                  [prismatic/schema "1.1.12"]
                  [tupelo "20.11.16c"]
                  ]
