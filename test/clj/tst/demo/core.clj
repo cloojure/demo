@@ -1,11 +1,7 @@
 (ns tst.demo.core
   (:use demo.core tupelo.core tupelo.test)
   (:require
-    [tupelo.parse.tagsoup :as tagsoup]
+    [tupelo.string :as str]
     ))
 
-(dotest
-  (spyx (jar-file?))
-
-  )
 

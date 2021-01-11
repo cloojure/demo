@@ -7,8 +7,7 @@
                  [prismatic/schema "1.1.12"]
                  [tupelo "21.01.05"]
                  ]
-  :plugins [
-            [com.jakemccrary/lein-test-refresh "0.24.1"]
+  :plugins [[com.jakemccrary/lein-test-refresh "0.24.1"]
             [lein-ancient "0.6.15"]
             [lein-codox "0.10.7"]
             ]
@@ -17,8 +16,8 @@
              :uberjar {:aot :all}}
 
   :global-vars {*warn-on-reflection* false}
-  :main demo.core
 
+  :main demo.core
   :source-paths ["src/clj"]
   :java-source-paths ["src/java"]
   :test-paths ["test/clj"]
