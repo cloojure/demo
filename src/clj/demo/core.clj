@@ -1,8 +1,10 @@
 (ns demo.core
-  (:use tupelo.core))
-
-
-(defn -main [& args]
-  (print-versions)
+  (:use tupelo.core)
+  ; (:gen-class) ; uncomment to make runnable JAR file
  )
+
+(defn -main []
+  (println "main - enter")
+  )
+
 

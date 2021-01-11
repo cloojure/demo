@@ -1,10 +1,11 @@
 (ns tst.demo.core
   (:use demo.core tupelo.core tupelo.test)
   (:require
-    [tupelo.string :as str]
-    [schema.core :as s]
+    [tupelo.parse.tagsoup :as tagsoup]
     ))
 
 (dotest
-  (spyx (demo.Calc/theAnswer))
+  (spyx (jar-file?))
+
   )
+

@@ -1,13 +1,11 @@
-(defproject demo "0.1.0-SNAPSHOT"
+(defproject demo-grp/demo-art "0.1.0-SNAPSHOT"
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [
-                 [org.apache.commons/commons-text "1.9"]
                  [clojure.java-time "0.3.2"]
-                 ; [org.clojure/clojure "1.10.2-alpha1"]
-                 [org.clojure/clojure "1.10.1"]
+                 [org.clojure/clojure "1.10.2-alpha1"]
                  [prismatic/schema "1.1.12"]
-                 [tupelo "20.11.16c"]
+                 [tupelo "21.01.05"]
                  ]
   :plugins [
             [com.jakemccrary/lein-test-refresh "0.24.1"]
@@ -19,7 +17,7 @@
              :uberjar {:aot :all}}
 
   :global-vars {*warn-on-reflection* false}
-  :main ^:skip-aot demo.core
+  :main demo.core
 
   :source-paths ["src/clj"]
   :java-source-paths ["src/java"]
