@@ -1,5 +1,8 @@
 (ns tst.demo.core
-  (:use tupelo.core tupelo.test))
+  (:use tupelo.core tupelo.test)
+  (:require
+    [schema.core :as s]))
+
 
 
 (comment
@@ -28,4 +31,3 @@
       (require '[clojure.java.browse :as cjb])
       (cjb/browse-url "http://wikipedia.com"))
     ))
-
