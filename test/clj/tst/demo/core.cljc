@@ -2,12 +2,9 @@
   (:use demo.core tupelo.core tupelo.test)
   (:require
     [schema.core :as s]
-     ))
+    [tupelo.misc :as misc]
+    [tupelo.string :as str]
+    ))
 
 
-;---------------------------------------------------------------------------------------------------
-#_(do
-    (require '[clojure.java.browse :as cjb])
-    (dotest
-      (spyx (cjb/browse-url "http://yahoo.com"))))
 

@@ -4,9 +4,11 @@
   :dependencies [
                  [clojure.java-time "0.3.2"]
                  [http-kit "2.5.3"]
-                 [org.flatland/ordered "1.5.9"]
                  [org.clojure/clojure "1.10.2"]
+                 [org.clojure/tools.cli "1.0.194"]
+                 [org.flatland/ordered "1.5.9"]
                  [prismatic/schema "1.1.12"]
+                 [semantic-csv "0.2.1-alpha1"]
                  [tupelo "21.01.26"]
                  ]
   :plugins [[com.jakemccrary/lein-test-refresh "0.24.1"]
@@ -29,3 +31,11 @@
 
   :jvm-opts ["-Xms500m" "-Xmx4g"]
   )
+
+;---------------------------------------------------------------------------------------------------
+(comment
+  (do
+    (require '[clojure.java.browse :as cjb])
+    (dotest
+      (spyx (cjb/browse-url "http://yahoo.com")))))
+
