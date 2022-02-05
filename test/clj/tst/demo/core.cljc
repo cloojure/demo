@@ -6,8 +6,5 @@
     [tupelo.string :as str]
     ))
 
-#_(ns tst.demo.core
-  (:use tupelo.core tupelo.test))
-
 
 
