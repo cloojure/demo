@@ -2,18 +2,12 @@
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [
-                 [clojure.java-time "0.3.2"]
-                 [http-kit "2.5.3"]
-                 [org.clojure/clojure "1.10.2"]
-                 [org.clojure/tools.cli "1.0.194"]
-                 [org.flatland/ordered "1.5.9"]
-                 [prismatic/schema "1.1.12"]
-                 [semantic-csv "0.2.1-alpha1"]
-                 [tupelo "21.01.26"]
+                 [org.clojure/clojure "1.10.3"]
+                 [prismatic/schema "1.2.0"]
+                 [tupelo "22.03.09"]
                  ]
-  :plugins [[com.jakemccrary/lein-test-refresh "0.24.1"]
+  :plugins [[com.jakemccrary/lein-test-refresh "0.25.0"]
             [lein-ancient "0.7.0"]
-            [lein-codox "0.10.7"]
             ]
 
   :profiles {:dev     {:dependencies []}
