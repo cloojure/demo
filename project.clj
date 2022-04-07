@@ -2,9 +2,9 @@
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [
-                 [org.clojure/clojure "1.10.3"]
+                 [org.clojure/clojure "1.11.0"]
                  [prismatic/schema "1.2.0"]
-                 [tupelo "22.03.09"]
+                 [tupelo "22.03.17"]
                  ]
   :plugins [[com.jakemccrary/lein-test-refresh "0.25.0"]
             [lein-ancient "0.7.0"]
