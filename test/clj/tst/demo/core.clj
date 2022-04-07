@@ -4,3 +4,7 @@
     [tupelo.string :as str]
     ))
 
+(dotest
+  (is true )
+  (is= 5 (+ 2 3))
+  )
